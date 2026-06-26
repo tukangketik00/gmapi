@@ -1,0 +1,8 @@
+{
+  "name": "gmapi",
+  "version": "1.0.0",
+  "main": "sync.js",
+  "dependencies": {
+    "@googleapis/gmail": "^14.0.0"
+  }
+}
