@@ -1,0 +1,36 @@
+name: Sync Gmail via Web Trigger
+
+on:
+  repository_dispatch:
+    types: [sync_gmail]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Jalankan Script Sync
+        env:
+          GOOGLE_TOKEN: ${{ github.event.client_payload.token }}
+        run: node sync.js
+
+      - name: Commit dan Push Perubahan JSON
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add savetoken.json inbox.json
+          git commit -m "Automated update: savetoken.json & inbox.json" || exit 0
+          git push
